@@ -1,24 +1,15 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {HeroesComponent} from './heroes.component';
-import {Component, Input} from '@angular/core';
+import {Component, Input, NO_ERRORS_SCHEMA} from '@angular/core';
 import {HeroService} from '../hero.service';
 import {of} from 'rxjs/observable/of';
-import {Hero} from '../hero';
 import {By} from '@angular/platform-browser';
+import {HeroComponent} from '../hero/hero.component';
 
-describe('HeroesComponent (shalow)', () => {
+describe('HeroesComponent (deep)', () => {
   let fixture: ComponentFixture<HeroesComponent>;
   let mockHeroService;
   let heroes;
-
-  @Component({
-    selector: 'app-hero',
-    template: '<div></div>'
-  })
-  class FakeHeroComponent {
-    @Input() hero: Hero;
-    //@Output() delete = new EventEmitter();
-  }
 
   beforeEach(() => {
 
@@ -33,28 +24,29 @@ describe('HeroesComponent (shalow)', () => {
     TestBed.configureTestingModule({
       declarations: [
         HeroesComponent,
-        FakeHeroComponent
+        HeroComponent
       ],
       providers: [
         {provide: HeroService, useValue: mockHeroService}
-      ]
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
     });
 
     fixture = TestBed.createComponent(HeroesComponent);
   });
 
 
-  it('should set heroes correctly', () => {
+  it('should render each hero as component', () => {
     mockHeroService.getHeroes.and.returnValue(of(heroes));
     fixture.detectChanges();
-    expect(fixture.componentInstance.heroes.length).toBe(heroes.length);
+
+    const heroComponentDe = fixture.debugElement.queryAll(By.directive(HeroComponent));
+
+    expect(heroComponentDe.length).toBe(heroes.length);
+    expect(heroComponentDe[0].componentInstance.hero.name).toEqual(heroes[0].name);
   });
 
   it('should have 3 li elements', () => {
-    mockHeroService.getHeroes.and.returnValue(of(heroes));
-    fixture.detectChanges();
-
-    expect(fixture.debugElement.queryAll(By.css('li')).length).toBe(3);
 
   });
 
