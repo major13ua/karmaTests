@@ -46,7 +46,78 @@ describe('HeroesComponent (deep)', () => {
     expect(heroComponentDe[0].componentInstance.hero.name).toEqual(heroes[0].name);
   });
 
-  it('should have 3 li elements', () => {
+  it('should delete element with hero service with click event', () => {
+
+
+    spyOn(fixture.componentInstance, 'delete');
+
+    mockHeroService.getHeroes.and.returnValue(of(heroes));
+    fixture.detectChanges();
+
+    const heroComponentDe = fixture.debugElement.queryAll(By.directive(HeroComponent));
+
+    heroComponentDe[0].query(By.css('button')).triggerEventHandler('click', {
+      stopPropagation: () => {}
+    });
+
+    expect(fixture.componentInstance.delete).toHaveBeenCalledWith(heroes[0]);
+
+  });
+
+
+  it('should delete element with hero service with emit event', () => {
+
+
+    spyOn(fixture.componentInstance, 'delete');
+
+    mockHeroService.getHeroes.and.returnValue(of(heroes));
+    fixture.detectChanges();
+
+    const heroComponentDe = fixture.debugElement.queryAll(By.directive(HeroComponent));
+
+    (<HeroComponent>heroComponentDe[0].componentInstance).delete.emit(undefined);
+
+    expect(fixture.componentInstance.delete).toHaveBeenCalledWith(heroes[0]);
+
+  });
+
+  it('should delete element with hero service with debug element', () => {
+
+
+    spyOn(fixture.componentInstance, 'delete');
+
+    mockHeroService.getHeroes.and.returnValue(of(heroes));
+    fixture.detectChanges();
+
+    const heroComponentDe = fixture.debugElement.queryAll(By.directive(HeroComponent));
+
+    heroComponentDe[0].triggerEventHandler('delete', 'null');
+
+    expect(fixture.componentInstance.delete).toHaveBeenCalledWith(heroes[0]);
+
+  });
+
+
+  it('should add hero to the hero list when add button is clicked', () => {
+    mockHeroService.getHeroes.and.returnValue(of(heroes));
+    fixture.detectChanges();
+
+    const name = 'Mr. Ice';
+
+    mockHeroService.addHero.and.returnValue(of({id:5, name: name, strength: 1}));
+
+    const inputElement = fixture.debugElement.query(By.css('input')).nativeElement;
+    const addBtn = fixture.debugElement.queryAll(By.css('button'))[0];
+
+    inputElement.value = name;
+    addBtn.triggerEventHandler('click', null);
+
+    fixture.detectChanges();
+
+    const heroesList = fixture.debugElement.query(By.css('ul')).nativeElement.textContent;
+
+    expect(heroesList).toContain(name);
+
 
   });
 
