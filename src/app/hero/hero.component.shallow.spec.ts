@@ -1,6 +1,7 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {HeroComponent} from './hero.component';
 import {NO_ERRORS_SCHEMA} from '@angular/core';
+import {By} from '@angular/platform-browser'
 
 describe('HeroComponent (shallow test)', () => {
 
@@ -26,6 +27,13 @@ describe('HeroComponent (shallow test)', () => {
     fixture.componentInstance.hero = {id: 1, name: 'Spider', strength: 8};
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('a').textContent).toContain('Spider');
+  });
+
+  it('should render hero name in anckor tag via debug element', () => {
+    fixture.componentInstance.hero = {id: 1, name: 'Spider', strength: 8};
+    fixture.detectChanges();
+    let de = fixture.debugElement.query(By.css('a'));
+    expect(de.nativeElement.textContent).toContain('Spider');
   });
 
 });
