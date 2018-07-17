@@ -18,8 +18,14 @@ describe('HeroComponent (shallow test)', () => {
   });
 
   it('should have the correct hero', () => {
-    fixture.componentInstance.hero = {id: 1, name: 'Spider', strength: 8}
+    fixture.componentInstance.hero = {id: 1, name: 'Spider', strength: 8};
     expect(fixture.componentInstance.hero.name).toEqual('Spider');
+  });
+
+  it('should render hero name in anckor tag', () => {
+    fixture.componentInstance.hero = {id: 1, name: 'Spider', strength: 8};
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('a').textContent).toContain('Spider');
   });
 
 });
